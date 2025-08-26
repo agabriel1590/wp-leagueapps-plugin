@@ -87,12 +87,9 @@ Free to use and modify under the terms of the GPL license.
 
 Author
 
-Developed by [Your Name] for LeagueApps Design Shop.
+Developed by Alipio Gabriel for LeagueApps Design Shop.
 
 
 ---
 
 Do you want me to also draft a **Usage Examples section** with multiple sample shortcodes (`teams`, `events`, `tryouts`) so future contributors know how to expand it?
-
-
-ChatGPT can make mistakes. Check important info.
