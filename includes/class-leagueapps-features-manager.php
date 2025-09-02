@@ -1,7 +1,9 @@
 <?php
-// Autoload github Update Checker
+// Autoload GitHub Update Checker
 require LA_PLUGIN_DIR . 'includes/plugin-update-checker-master/plugin-update-checker.php';
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+
+require LA_PLUGIN_DIR . 'includes/features/leagueapps-widgets/class-la-feature-leagueapps-widgets.php';
 
 class Leagueapps_Features_Manager {
 
@@ -15,43 +17,31 @@ class Leagueapps_Features_Manager {
     }
 
     private function __construct() {
-        // Hook the load_textdomain function to init action
-        //$this->load_textdomain();
-
-        //load update checker github
-        $this->load_update_checker();
-
-        // Load admin settings for enabling/disabling features
-        $this->load_admin_settings();
-        $this->load_features();
+        // Admin settings (Settings → LeagueApps)
+        if (is_admin()) {
+            new Leagueapps_Admin_Settings();
+            $this->load_update_checker();
+        }
+        // Any other bootstrapping you need can go here
+        
+        // Initialise the feature (front end + back end safe)
+        add_action('init', ['LA_Feature_LeagueApps_Widgets', 'init']);
     }
 
     public function activate() {
+        // Place any option initialisation here if needed later
     }
 
     public function deactivate() {
-        // Delegate the deactivation to each feature's admin settings class
-    }
-
-    private function load_admin_settings() {
-    }
-
-
-    private function load_features() {
-        $options = get_option('leagueapps_features_settings', array());
+        // No-op, keep settings.
     }
 
     public function load_update_checker() {
         $updateChecker = PucFactory::buildUpdateChecker(
             'https://github.com/agabriel1590/wp-leagueapps-plugin',
-            plugin_dir_path(__DIR__) . 'wp-leagueapps-plugin.php',
+            LA_PLUGIN_FILE,                     // ← important: main plugin file
             'wp-leagueapps-plugin'
         );
-
-        // Set the branch to check the plugin updates from
         $updateChecker->setBranch('main');
-
-        // Optional: Add an authentication token if your GitHub repository is private.
-        // $updateChecker->setAuthentication('your-github-token-here');
     }
 }
