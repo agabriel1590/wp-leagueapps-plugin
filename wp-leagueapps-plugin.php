@@ -17,7 +17,7 @@ define('LA_PLUGIN_URL', plugin_dir_url(__FILE__));
 
 // Autoload Feature Classes
 spl_autoload_register(function ($class_name) {
-    if (false !== strpos($class_name, 'leagueapps')) {
+    if (false !== strpos($class_name, 'Leagueapps')) {
         $file_name = str_replace('_', '-', strtolower($class_name)) . '.php';
 
         $paths = [

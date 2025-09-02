@@ -1,6 +1,6 @@
 <?php
 // Autoload github Update Checker
-require BLOGTEC_PLUGIN_DIR . 'includes/plugin-update-checker-master/plugin-update-checker.php';
+require LA_PLUGIN_DIR . 'includes/plugin-update-checker-master/plugin-update-checker.php';
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 
 class Leagueapps_Features_Manager {
@@ -16,7 +16,7 @@ class Leagueapps_Features_Manager {
 
     private function __construct() {
         // Hook the load_textdomain function to init action
-        $this->load_textdomain();
+        //$this->load_textdomain();
 
         //load update checker github
         $this->load_update_checker();
