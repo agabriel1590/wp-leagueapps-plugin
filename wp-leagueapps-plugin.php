@@ -2,45 +2,52 @@
 /**
  * Plugin Name: WP LeagueApps Plugin
  * Description: Extends WordPress functionality with LeagueApps API.
- * Version: 0.0.2
+ * Version: 0.0.1
  * Author: Alipio Gabriel
  * Text Domain: wp-leagueapps
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit; // Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
 }
 
-// Define constants
-define( 'WP_LEAGUEAPPS_PATH', plugin_dir_path( __FILE__ ) );
-define( 'WP_LEAGUEAPPS_URL', plugin_dir_url( __FILE__ ) );
+define('LA_PLUGIN_VERSION', '0.0.1');
+define('LA_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('LA_PLUGIN_URL', plugin_dir_url(__FILE__));
 
-// Include core files
-require_once WP_LEAGUEAPPS_PATH . 'includes/updater.php';
-require_once WP_LEAGUEAPPS_PATH . 'includes/class-leagueapps-api.php';
-require_once WP_LEAGUEAPPS_PATH . 'includes/class-leagueapps-admin.php';
-require_once WP_LEAGUEAPPS_PATH . 'includes/class-leagueapps-shortcodes.php';
-require_once WP_LEAGUEAPPS_PATH . 'includes/helpers.php';
+// Autoload Feature Classes
+spl_autoload_register(function ($class_name) {
+    if (false !== strpos($class_name, 'leagueapps')) {
+        $file_name = str_replace('_', '-', strtolower($class_name)) . '.php';
 
-// Init plugin
-function wp_leagueapps_init() {
-    new LeagueApps_Admin();
-    new LeagueApps_Shortcodes();
-    if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
-    $config = array(
-        'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
-        'proper_folder_name' => 'wp-leagueapps-plugin', // this is the name of the folder your plugin lives in
-        'api_url' => 'https://api.github.com/repos/agabriel1590/wp-leagueapps-plugin', // the GitHub API url of your GitHub repo
-        'raw_url' => 'https://raw.github.com/agabriel1590/wp-leagueapps-plugin/master', // the GitHub raw url of your GitHub repo
-        'github_url' => 'https://github.com/agabriel1590/wp-leagueapps-plugin', // the GitHub url of your GitHub repo
-        'zip_url' => 'https://github.com/agabriel1590/wp-leagueapps-plugin/zipball/master', // the zip url of the GitHub repo
-        'sslverify' => true, // whether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
-        'requires' => '6.8.2', // which version of WordPress does your plugin require?
-        'tested' => '6.8.2', // which version of WordPress is your plugin tested up to?
-        'readme' => 'README.md', // which file to use as the readme for the version number
-        'access_token' => '', // Access private repositories by authorizing under Plugins > GitHub Updates when this example plugin is installed
-    );
-    new WP_GitHub_Updater($config);
+        $paths = [
+            LA_PLUGIN_DIR . 'includes/',              
+            LA_PLUGIN_DIR . 'includes/features/',    
+            LA_PLUGIN_DIR . 'includes/features/leagueapps-widgets/',
+            LA_PLUGIN_DIR . 'includes/interfaces/',
+        ];
+
+        foreach ($paths as $path) {
+            $file_path = $path . 'class-' . $file_name;
+            if (file_exists($file_path)) {
+                require_once $file_path;
+                break;
+            }
+        }
     }
+});
+
+function leagueapps_features_manager_init() {
+    Leagueapps_Features_Manager::get_instance();
 }
-add_action( 'plugins_loaded', 'wp_leagueapps_init' );
+add_action('plugins_loaded', 'leagueapps_features_manager_init');
+
+function leagueapps_features_manager_activate() {
+    Leagueapps_Features_Manager::get_instance()->activate();
+}
+register_activation_hook(__FILE__, 'Leagueapps_features_manager_activate');
+
+function leagueapps_features_manager_deactivate() {
+    Leagueapps_Features_Manager::get_instance()->deactivate();
+}
+register_deactivation_hook(__FILE__, 'leagueapps_features_manager_deactivate');
