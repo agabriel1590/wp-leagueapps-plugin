@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WP LeagueApps Plugin
  * Description: Extends WordPress functionality with LeagueApps API.
- * Version: 0.0.1
+ * Version: 0.0.2
  * Author: Alipio Gabriel
  * Text Domain: wp-leagueapps
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('LA_PLUGIN_VERSION', '0.0.1');
+define('LA_PLUGIN_VERSION', '0.0.2');
 define('LA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('LA_PLUGIN_URL', plugin_dir_url(__FILE__));
 
